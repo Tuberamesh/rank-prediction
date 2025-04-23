@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>KCET Rank Estimator as per 2024</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #eef2f7;
+      padding: 40px;
+    }
+    .container {
+      max-width: 420px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 14px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+    label {
+      display: block;
+      margin: 15px 0 5px;
+    }
+    select, input[type="number"] {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 10px;
+      background-color: #0066cc;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    #result {
+      margin-top: 20px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 18px;
+      color: #333;
+      min-height: 40px;
+    }
+    .note {
+      margin-top: 15px;
+      font-size: 12px;
+      color: #666;
+      text-align: center;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>KCET Rank Estimator as per 2024</h2>
+
+    <label for="stream">Select Stream:</label>
+    <select id="stream">
+      <option value="pcm">PCM (Engineering)</option>
+      <option value="pcb">PCB (Medical / Agri)</option>
+    </select>
+
+    <label for="board">Board Marks (out of 300):</label>
+    <input type="number" id="board" min="0" max="300" placeholder="Enter your board marks" />
+
+    <label for="kcet">KCET Marks (out of 180):</label>
+    <input type="number" id="kcet" min="0" max="180" placeholder="Enter your KCET marks" />
+
+    <button onclick="estimateRank()">Estimate Rank</button>
+
+    <div id="result"></div>
+    <div class="note">
+      * Note: This rank estimation is based purely on last year’s data.<br>
+      Actual results and ranks may vary.
+    </div>
+  </div>
+
+  <script>
+    function estimateRank() {
+      const stream = document.getElementById('stream').value;
+      const board = parseFloat(document.getElementById('board').value);
+      const kcet = parseFloat(document.getElementById('kcet').value);
+      const result = document.getElementById('result');
+
+      // Validate inputs
+      if (
+        isNaN(board) || board < 0 || board > 300 ||
+        isNaN(kcet) || kcet < 0 || kcet > 180
+      ) {
+        result.innerText = "Please enter valid marks within range.";
+        return;
+      }
+
+      // Calculate final normalized score out of 100
+      const boardScore = (board / 300) * 50;
+      const kcetScore = (kcet / 180) * 50;
+      const finalScore = boardScore + kcetScore;
+
+      // Rank estimation logic based on finalScore with tighter ranges
+      let rankEstimate = "";
+
+      if (finalScore >= 90) rankEstimate = "Below 2,000";
+      else if (finalScore >= 85) rankEstimate = "2,000 - 5,000";
+      else if (finalScore >= 80) rankEstimate = "5,000 - 10,000";
+      else if (finalScore >= 75) rankEstimate = "10,000 - 15,000";
+      else if (finalScore >= 70) rankEstimate = "15,000 - 25,000";
+      else if (finalScore >= 65) rankEstimate = "25,000 - 35,000";
+      else if (finalScore >= 60) rankEstimate = "35,000 - 50,000";
+      else if (finalScore >= 55) rankEstimate = "55,000 - 65,000";
+      else if (finalScore >= 50) rankEstimate = "65,000 - 80,000";
+      else rankEstimate = "Above 1,00,000";
+
+      result.innerText = `Estimated Rank (${stream.toUpperCase()}): ${rankEstimate}`;
+    }
+  </script>
+</body>
+</html>
