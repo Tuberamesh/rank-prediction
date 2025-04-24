@@ -132,12 +132,15 @@
         [30,35, "1,50,000 - 1,70,000"]
       ];
 
-      const ranks = stream === "pcm" ? engineeringRanks : veterinaryRanks;
-
-      for (let [lower, upper, label] of ranks) {
-        if (finalScore >= lower && finalScore < upper) {
-          rankEstimate = label;
-          break;
+      if (finalScore === 100) {
+        rankEstimate = "Rank 1";
+      } else {
+        const ranks = stream === "pcm" ? engineeringRanks : veterinaryRanks;
+        for (let [lower, upper, label] of ranks) {
+          if (finalScore >= lower && finalScore < upper) {
+            rankEstimate = label;
+            break;
+          }
         }
       }
 
