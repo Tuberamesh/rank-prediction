@@ -2,20 +2,17 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>KCET Rank Estimator as per 2024</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>KCET Rank Estimator</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #eef2f7;
-      padding: 40px;
-    }
-    .container {
-      max-width: 420px;
-      margin: auto;
-      background: white;
-      padding: 30px;
-      border-radius: 14px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      max-width: 500px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #f5f5f5;
+      border-radius: 8px;
+      box-shadow: 0 0 10px #ccc;
     }
     h2 {
       text-align: center;
@@ -23,118 +20,129 @@
     }
     label {
       display: block;
-      margin: 15px 0 5px;
+      margin-top: 15px;
+      font-weight: bold;
     }
-    select, input[type="number"] {
+    input, select {
       width: 100%;
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 14px;
+      padding: 8px 10px;
+      margin-top: 5px;
+      border: 1px solid #aaa;
+      border-radius: 4px;
+      font-size: 16px;
     }
     button {
       margin-top: 20px;
       width: 100%;
-      padding: 10px;
-      background-color: #0066cc;
+      padding: 12px;
+      background-color: #2c7efc;
       color: white;
+      font-size: 18px;
       border: none;
       border-radius: 6px;
-      font-size: 16px;
       cursor: pointer;
     }
-    #result {
-      margin-top: 20px;
-      text-align: center;
-      font-weight: bold;
-      font-size: 18px;
-      color: #333;
-      min-height: 40px;
+    button:hover {
+      background-color: #245fc1;
     }
-    .note {
-      margin-top: 15px;
-      font-size: 12px;
-      color: #666;
+    #rankResult {
+      margin-top: 25px;
+      font-size: 20px;
+      font-weight: bold;
+      color: #222;
+      text-align: center;
+      min-height: 60px;
+    }
+    #note {
+      margin-top: 40px;
+      font-size: 14px;
+      color: #555;
       text-align: center;
       font-style: italic;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>KCET Rank Estimator as per 2024</h2>
 
-    <label for="stream">Select Stream:</label>
-    <select id="stream">
-      <option value="pcm">Engineering (PCM)</option>
-      <option value="pcb">Veterinary / Agri (PCB)</option>
-    </select>
+  <h2>KCET Rank Estimator as per 2024</h2>
 
-    <label for="board">Board Marks (out of 300):</label>
-    <input type="number" id="board" min="0" max="300" placeholder="Enter your board marks" />
+  <label for="board">Enter Board Marks (out of 300):</label>
+  <input type="number" id="board" placeholder="e.g. 275" min="0" max="300" />
 
-    <label for="kcet">KCET Marks (out of 180):</label>
-    <input type="number" id="kcet" min="0" max="180" placeholder="Enter your KCET marks" />
+  <label for="kcet">Enter KCET PCM/PCB Marks (out of 180):</label>
+  <input type="number" id="kcet" placeholder="e.g. 50" min="0" max="180" />
 
-    <button onclick="estimateRank()">Estimate Rank</button>
+  <label for="stream">Select Stream:</label>
+  <select id="stream">
+    <option value="pcm">Engineering (PCM)</option>
+    <option value="pcb">Veterinary (PCB)</option>
+  </select>
 
-    <div id="result"></div>
-    <div class="note">
-      * Note: This rank estimation is based purely on last year’s data.<br>
-      Actual results and ranks may vary.
-    </div>
+  <button onclick="estimateRank()">Calculate Rank</button>
+
+  <div id="rankResult"></div>
+
+  <div id="note">
+    *Note: This rank estimator is based on last year's trends and approximate calculations. Actual results may vary.*
   </div>
 
   <script>
     function estimateRank() {
-      const stream = document.getElementById('stream').value;
-      const board = parseFloat(document.getElementById('board').value);
-      const kcet = parseFloat(document.getElementById('kcet').value);
-      const result = document.getElementById('result');
+      const board = parseFloat(document.getElementById("board").value);
+      const kcet = parseFloat(document.getElementById("kcet").value);
+      const stream = document.getElementById("stream").value;
+      const rankOutput = document.getElementById("rankResult");
 
-      // Validate inputs
       if (
-        isNaN(board) || board < 0 || board > 300 ||
-        isNaN(kcet) || kcet < 0 || kcet > 180
+        isNaN(board) || isNaN(kcet) ||
+        board < 0 || board > 300 ||
+        kcet < 0 || kcet > 180
       ) {
-        result.innerText = "Please enter valid marks within range.";
+        rankOutput.innerHTML = "Please enter valid marks within the given ranges.";
         return;
       }
 
-      // Normalized score out of 100
-      const boardScore = (board / 300) * 50;
-      const kcetScore = (kcet / 180) * 50;
-      const finalScore = boardScore + kcetScore;
+      const boardPercent = (board / 300) * 100;
+      const kcetPercent = (kcet / 180) * 100;
+      const finalScore = (boardPercent + kcetPercent) / 2;
 
-      let rankEstimate = "";
-      if (stream === "pcm") {
-  // Engineering estimation (unchanged)
-  if (finalScore >= 90) rankEstimate = "Below 2,000";
-  else if (finalScore >= 85) rankEstimate = "2,000 - 5,000";
-  else if (finalScore >= 80) rankEstimate = "5,000 - 10,000";
-  else if (finalScore >= 75) rankEstimate = "10,000 - 15,000";
-  else if (finalScore >= 70) rankEstimate = "15,000 - 25,000";
-  else if (finalScore >= 65) rankEstimate = "25,000 - 35,000";
-  else if (finalScore >= 60) rankEstimate = "35,000 - 50,000";
-  else if (finalScore >= 55) rankEstimate = "55,000 - 65,000";
-  else if (finalScore >= 50) rankEstimate = "65,000 - 80,000";
-  else rankEstimate = "Above 1,00,000";
-} else {
-  // PCB/Veterinary estimation (updated)
-  if (finalScore >= 90) rankEstimate = "Below 2,000";
-  else if (finalScore >= 85) rankEstimate = "2,000 - 5,000";
-  else if (finalScore >= 80) rankEstimate = "5,000 - 9,000";
-  else if (finalScore >= 75) rankEstimate = "9,000 - 14,000";
-  else if (finalScore >= 70) rankEstimate = "14,000 - 25,000";
-  else if (finalScore >= 65) rankEstimate = "25,000 - 37,000";
-  else if (finalScore >= 60) rankEstimate = "37,000 - 47,000";
-  else if (finalScore >= 55) rankEstimate = "47,000 - 55,000";
-  else if (finalScore >= 50) rankEstimate = "55,000 - 68,000";
-  else rankEstimate = "Above 1,00,000";
-}
+      let rankEstimate = "Above 1,50,000";
 
-      result.innerText = `Estimated Rank (${stream.toUpperCase()}): ${rankEstimate}`;
+      const engineeringRanks = [
+        [95, 0, "Below 1,000"], [93, 95, "1,000 - 2,000"], [91, 93, "2,000 - 3,500"],
+        [89, 91, "3,500 - 5,000"], [87, 89, "5,000 - 7,000"], [85, 87, "7,000 - 9,000"],
+        [83, 85, "9,000 - 12,000"], [81, 83, "12,000 - 15,000"], [79, 81, "15,000 - 18,000"],
+        [77, 79, "18,000 - 21,000"], [75, 77, "21,000 - 25,000"], [73, 75, "25,000 - 30,000"],
+        [71, 73, "30,000 - 35,000"], [69, 71, "35,000 - 40,000"], [67, 69, "40,000 - 45,000"],
+        [65, 67, "45,000 - 50,000"], [63, 65, "50,000 - 55,000"], [61, 63, "55,000 - 60,000"],
+        [59, 61, "60,000 - 65,000"], [57, 59, "65,000 - 70,000"], [55, 57, "70,000 - 75,000"],
+        [53, 55, "75,000 - 85,000"], [50, 53, "85,000 - 95,000"], [47, 50, "95,000 - 1,00,000"],
+        [40, 47, "1,00,000 - 1,30,000"]
+      ];
+
+      const veterinaryRanks = [
+        [95, 0, "Below 800"], [93, 95, "800 - 1,500"], [91, 93, "1,500 - 3,000"],
+        [89, 91, "3,000 - 5,000"], [87, 89, "5,000 - 7,000"], [85, 87, "7,000 - 9,000"],
+        [83, 85, "9,000 - 11,000"], [81, 83, "11,000 - 13,000"], [79, 81, "13,000 - 16,000"],
+        [77, 79, "16,000 - 20,000"], [75, 77, "20,000 - 24,000"], [73, 75, "24,000 - 28,000"],
+        [71, 73, "28,000 - 32,000"], [69, 71, "32,000 - 36,000"], [67, 69, "36,000 - 40,000"],
+        [65, 67, "40,000 - 45,000"], [63, 65, "45,000 - 50,000"], [61, 63, "50,000 - 55,000"],
+        [59, 61, "55,000 - 60,000"], [57, 59, "60,000 - 70,000"], [55, 57, "70,000 - 80,000"],
+        [50, 55, "80,000 - 95,000"], [47, 50, "95,000 - 1,00,000"],[40, 47, "1,00,000 - 1,30,000"]
+      ];
+
+      const ranks = stream === "pcm" ? engineeringRanks : veterinaryRanks;
+
+      for (let [lower, upper, label] of ranks) {
+        if (finalScore >= lower && finalScore < upper) {
+          rankEstimate = label;
+          break;
+        }
+      }
+
+      rankOutput.innerHTML = `Estimated KCET Rank: <br><strong>${rankEstimate}</strong>`;
     }
   </script>
+
 </body>
 </html>
